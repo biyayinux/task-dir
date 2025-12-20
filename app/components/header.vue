@@ -1,6 +1,24 @@
+<script setup>
+const colorMode = useColorMode()
+
+const toggleDark = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
+</script>
+
 <template>
-  <header class="flex justify-center gap-2 p-4">
-    <LucideClipboardCheck class="h-7 w-7" />
-    <h1 class="text-2xl">TaskDir</h1>
+  <header class="flex items-center justify-between p-4">
+    <div class="flex items-center gap-2">
+      <LucideClipboardCheck class="h-6 w-6" />
+      <h1 class="text-2xl">
+        <NuxtLink to="/">TaskDir</NuxtLink>
+      </h1>
+    </div>
+    <ClientOnly>
+      <button @click="toggleDark" type="button">
+        <LucideSun v-if="colorMode.value === 'dark'" class="h-6 w-6" />
+        <LucideMoon v-else class="h-6 w-6" />
+      </button>
+    </ClientOnly>
   </header>
 </template>
