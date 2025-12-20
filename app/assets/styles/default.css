@@ -2,16 +2,17 @@
 
 /* Déclaration de la police */
 @font-face {
-  font-family: 'Carter One';
-  src: url('../fonts/CarterOne-Regular.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Lilex';
+  src: url('../fonts/Lilex-Bold.woff') format('woff');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Police par défaut pour tout */
+/* Police par défaut pour tout le site */
 @layer base {
   html {
-    font-family: 'Carter One', cursive;
+    font-family: 'Lilex', monospace;
+    font-weight: 700;
   }
 }
