@@ -40,23 +40,15 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="p-6 text-center">
-    <div v-if="admin" class="space-y-4">
-      <h1 class="text-2xl font-bold">Bienvenue chez MKDIR</h1>
-      <div class="flex flex-col items-center gap-2">
-        <img
-          :src="admin.photos[0].value"
-          class="h-20 w-20 rounded-full border shadow"
-        />
-        <p class="text-lg font-semibold">{{ admin.displayName }}</p>
-        <p class="text-gray-600">{{ admin.emails[0].value }}</p>
+  <div class="flex min-h-screen flex-col items-center justify-center">
+    <div v-if="admin" class="flex flex-col items-center space-y-4">
+      <UiTitle>Bienvenue chez MKDIR</UiTitle>
+      <div class="flex flex-col items-center gap-2 text-center">
+        <UiAvatar :src="admin.photos[0].value" />
+        <UiParagraph>{{ admin.displayName }}</UiParagraph>
+        <UiParagraph>{{ admin.emails[0].value }}</UiParagraph>
       </div>
-      <button
-        @click="logout"
-        class="mt-4 block w-full text-center text-red-500 underline"
-      >
-        Se déconnecter
-      </button>
+      <UiButton @click="logout">Se déconnecter</UiButton>
     </div>
     <div v-else class="py-20">Chargement du profil...</div>
   </div>
