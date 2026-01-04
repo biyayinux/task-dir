@@ -14,7 +14,7 @@ onMounted(async () => {
 
   try {
     // Appeler le backend avec le header Authorization
-    const response = await fetch(`${config.public.backendUrl}/auth/admin`, {
+    const response = await fetch(`${config.public.backendUrl}/admin/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

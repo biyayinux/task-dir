@@ -18,7 +18,7 @@ onMounted(async () => {
   // Vérifie si le token est encore valide pour rediriger vers la page de profil
   const existingToken = localStorage.getItem('auth_token')
   if (existingToken) {
-    const res = await fetch(`${config.public.backendUrl}/auth/admin`, {
+    const res = await fetch(`${config.public.backendUrl}/admin/profile`, {
       headers: { Authorization: `Bearer ${existingToken}` }
     })
     if (res.ok) await navigateTo('/')
