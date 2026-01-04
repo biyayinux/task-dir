@@ -40,7 +40,9 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center">
+  <div
+    class="flex min-h-screen flex-col items-center justify-center text-center"
+  >
     <div v-if="admin" class="flex flex-col items-center space-y-4">
       <UiTitle>Bienvenue chez MKDIR</UiTitle>
       <div class="flex flex-col items-center gap-2 text-center">
