@@ -2,64 +2,56 @@
 const config = useRuntimeConfig()
 const admin = ref(null)
 
-onMounted(async () => {
-  // Récupérer le token stocké
-  const token = localStorage.getItem('auth_token')
-
-  // Si pas de token, direction login
-  if (!token) {
-    await navigateTo('/login')
-    return
-  }
-
-  try {
-    // Appeler le backend avec le header Authorization
-    const response = await fetch(`${config.public.backendUrl}/admin/profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-
-    if (response.ok) {
-      // Stocke les données venant de la base de données SQL
-      admin.value = await response.json()
-    } else {
-      // Le token est expiré ou invalide
-      localStorage.removeItem('auth_token')
-      await navigateTo('/login')
-    }
-  } catch (error) {
-    await navigateTo('/login')
-  }
-})
-
 // Fonction de déconnexion
 const logout = () => {
   localStorage.removeItem('auth_token') // Supprime le token
   navigateTo('/login')
 }
+
+onMounted(async () => {
+  const token = localStorage.getItem('auth_token')
+
+  // On récupère les infos via la route /admin/me
+  if (token) {
+    try {
+      const response = await fetch(`${config.public.backendUrl}/admin/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+
+      if (response.ok) {
+        admin.value = await response.json()
+      } else {
+        // Nettoyage si le token est invalide
+        localStorage.removeItem('auth_token')
+        await navigateTo('/login')
+      }
+    } catch (error) {
+      console.error('Erreur de récupération', error)
+      await navigateTo('/login')
+    }
+  } else {
+    // Redirection si aucun token trouvé
+    navigateTo('/login')
+  }
+})
 </script>
 
 <template>
-  <div
-    class="flex min-h-screen flex-col items-center justify-center text-center"
-  >
-    <div v-if="admin" class="flex flex-col items-center space-y-4">
-      <UiTitle>Bienvenue {{ admin.pseudo }}</UiTitle>
-      <div class="flex flex-col items-center gap-3 text-center">
-        <UiAvatar
-          :src="admin.photo_profil ? admin.photo_profil : '/images/avatar.svg'"
-        />
-        <div class="space-y-2">
-          <UiParagraph>{{ admin.noms }}</UiParagraph>
-          <UiParagraph>{{ admin.email }}</UiParagraph>
-          <UiParagraph v-if="admin.poste">{{ admin.poste }}</UiParagraph>
-        </div>
-      </div>
-      <UiButton @click="logout" class="mt-6"> Se déconnecter </UiButton>
+  <div class="flex min-h-screen flex-col items-center justify-center gap-6">
+    <UiTitle>Page d'accueil</UiTitle>
+    <div v-if="admin" class="flex flex-col items-center gap-4">
+      <NuxtLink :to="`/${admin.pseudo}`">
+        <UiButton> Voir mon profil {{ admin.pseudo }} </UiButton>
+      </NuxtLink>
+      <button
+        @click="logout"
+        class="text-sm text-red-500 underline transition-colors hover:text-red-700"
+      >
+        Se déconnecter
+      </button>
     </div>
-    <div v-else class="flex flex-col items-center gap-4 py-20">
-      <UiParagraph>Chargement du profil...</UiParagraph>
+    <div v-else class="flex flex-col items-center gap-4">
+      <p class="text-sm text-gray-400">Chargement de votre session...</p>
     </div>
   </div>
 </template>

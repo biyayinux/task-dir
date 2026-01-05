@@ -2,37 +2,46 @@
 const config = useRuntimeConfig()
 const route = useRoute()
 
-// État pour afficher une erreur si l'email n'est pas en base de données
+// État pour afficher une erreur si l'email n'est pas autorisé
 const errorMessage = ref('')
 
 onMounted(async () => {
-  // Vérifie si le backend a renvoyé une erreur dans l'URL
+  // Vérification des erreurs renvoyées par le backend dans l'URL
   if (route.query.error === 'unauthorized') {
     errorMessage.value =
-      'Cette section est réservée aux administrateurs autorisés.'
+      'Accès refusé : votre email n’est pas enregistré comme administrateur.'
   } else if (route.query.error) {
-    errorMessage.value = 'Une erreur est survenue lors de la connexion.'
+    errorMessage.value = 'Une erreur est survenue lors de la connexion Google.'
   }
 
-  // Récupère le token depuis l'URL après la connexion Google
+  // Récupération du token après le callback Google
   const token = route.query.token
 
   if (token) {
-    // Sauvegarde le token et redirige vers l'accueil
     localStorage.setItem('auth_token', token)
+    // Redirection vers l'accueil
     await navigateTo('/')
     return
   }
 
-  // Vérifie si un token existe déjà dans le navigateur
+  // Vérification si une session est déjà active
   const existingToken = localStorage.getItem('auth_token')
   if (existingToken) {
-    // Vérifie si le token est toujours valide auprès du backend
-    const res = await fetch(`${config.public.backendUrl}/admin/profile`, {
-      headers: { Authorization: `Bearer ${existingToken}` }
-    })
-    // Si valide, redirection automatique vers l'accueil
-    if (res.ok) await navigateTo('/')
+    try {
+      const res = await fetch(`${config.public.backendUrl}/admin/me`, {
+        headers: { Authorization: `Bearer ${existingToken}` }
+      })
+
+      // Si le token est toujours bon, on redirige directement vers l'accueil
+      if (res.ok) {
+        await navigateTo('/')
+      } else {
+        // Si le token est expiré, on le nettoie
+        localStorage.removeItem('auth_token')
+      }
+    } catch (error) {
+      console.error('Erreur de vérification session')
+    }
   }
 })
 </script>
