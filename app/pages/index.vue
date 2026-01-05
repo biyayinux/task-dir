@@ -47,7 +47,9 @@ const logout = () => {
     <div v-if="admin" class="flex flex-col items-center space-y-4">
       <UiTitle>Bienvenue {{ admin.pseudo }}</UiTitle>
       <div class="flex flex-col items-center gap-3 text-center">
-        <UiAvatar v-if="admin.photo_profil" :src="admin.photo_profil" />
+        <UiAvatar
+          :src="admin.photo_profil ? admin.photo_profil : '/images/avatar.svg'"
+        />
         <div class="space-y-2">
           <UiParagraph>{{ admin.noms }}</UiParagraph>
           <UiParagraph>{{ admin.email }}</UiParagraph>
