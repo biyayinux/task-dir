@@ -21,6 +21,7 @@ onMounted(async () => {
     })
 
     if (response.ok) {
+      // Stocke les données venant de la base de données SQL
       admin.value = await response.json()
     } else {
       // Le token est expiré ou invalide
@@ -44,14 +45,19 @@ const logout = () => {
     class="flex min-h-screen flex-col items-center justify-center text-center"
   >
     <div v-if="admin" class="flex flex-col items-center space-y-4">
-      <UiTitle>Bienvenue chez MKDIR</UiTitle>
-      <div class="flex flex-col items-center gap-2 text-center">
-        <UiAvatar :src="admin.photos[0].value" />
-        <UiParagraph>{{ admin.displayName }}</UiParagraph>
-        <UiParagraph>{{ admin.emails[0].value }}</UiParagraph>
+      <UiTitle>Bienvenue {{ admin.pseudo }}</UiTitle>
+      <div class="flex flex-col items-center gap-3 text-center">
+        <UiAvatar v-if="admin.photo_profil" :src="admin.photo_profil" />
+        <div class="space-y-2">
+          <UiParagraph>{{ admin.noms }}</UiParagraph>
+          <UiParagraph>{{ admin.email }}</UiParagraph>
+          <UiParagraph v-if="admin.poste">{{ admin.poste }}</UiParagraph>
+        </div>
       </div>
-      <UiButton @click="logout">Se déconnecter</UiButton>
+      <UiButton @click="logout" class="mt-6"> Se déconnecter </UiButton>
     </div>
-    <div v-else class="py-20">Chargement du profil...</div>
+    <div v-else class="flex flex-col items-center gap-4 py-20">
+      <UiParagraph>Chargement du profil...</UiParagraph>
+    </div>
   </div>
 </template>
