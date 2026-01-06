@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ShieldCheck } from 'lucide-vue-next'
-
 const { errorMessage, googleLoginUrl, checkSession } = useAuthLogin()
+
+// Mise en page
+definePageMeta({
+  layout: 'none'
+})
 
 onMounted(() => {
   checkSession()
