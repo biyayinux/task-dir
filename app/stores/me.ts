@@ -2,11 +2,16 @@ import { defineStore } from 'pinia'
 
 // On définit la structure de l'objet Admin
 interface Admin {
-  pseudo: string
+  id: number
   noms: string
+  pseudo: string
+  description?: string
   email: string
+  github?: string
+  portefolio?: string
   photo_profil?: string // Le ? signifie que c'est optionnel
   poste?: string
+  inscrit_le: string
 }
 
 export const useMeStore = defineStore('me', () => {
