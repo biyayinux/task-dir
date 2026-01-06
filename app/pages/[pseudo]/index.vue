@@ -1,68 +1,62 @@
-<script setup>
-const config = useRuntimeConfig()
-const admin = ref(null)
+<script setup lang="ts">
+const { me, fetchProfile, logout } = useMe()
 
-const fetchProfile = async () => {
-  const token = localStorage.getItem('auth_token')
-  if (!token) return navigateTo('/login')
-
-  try {
-    const response = await fetch(`${config.public.backendUrl}/admin/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-
-    if (response.ok) {
-      admin.value = await response.json()
-    } else {
-      // Si le token est invalide ou expiré
-      localStorage.removeItem('auth_token')
-      await navigateTo('/login')
-    }
-  } catch (error) {
-    console.error('Erreur :', error)
-    await navigateTo('/login')
-  }
-}
-
-onMounted(fetchProfile)
+// Récupération des données au montage du composant
+onMounted(() => {
+  fetchProfile()
+})
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center p-4">
+  <div class="flex min-h-[80vh] flex-col items-center justify-center p-4">
     <div
-      v-if="admin"
-      class="w-full max-w-md space-y-6 rounded-xl border bg-white p-6 shadow-sm"
+      v-if="me"
+      class="w-full max-w-md space-y-6 rounded-2xl border p-8 shadow-lg dark:bg-gray-900"
     >
       <div class="flex flex-col items-center space-y-4">
-        <UiTitle>Profil de {{ admin.pseudo }}</UiTitle>
-        <UiAvatar :src="admin.photo_profil || '/images/avatar.svg'" />
+        <NuxtLink :to="`/${me.pseudo}`">
+          <UiAvatar
+            :src="me.photo_profil || '/images/avatar.svg'"
+            class="border-primary/10 h-24 w-24 border-4 transition-transform hover:scale-105"
+          />
+        </NuxtLink>
         <div class="text-center">
-          <h2 class="mt-2">{{ admin.noms }}</h2>
-          <UiParagraph class="mt-2">{{ admin.pseudo }}</UiParagraph>
-          <UiParagraph class="py-2">{{ admin.email }}</UiParagraph>
-          <UiParagraph v-if="admin.poste">
-            {{ admin.poste }}
-          </UiParagraph>
+          <h1 class="text-2xl font-bold">{{ me.noms }}</h1>
+          <NuxtLink :to="`/${me.pseudo}`" class="text-primary hover:underline">
+            @{{ me.pseudo }}
+          </NuxtLink>
         </div>
-        <div class="flex w-full flex-col gap-2 pt-4">
-          <NuxtLink :to="`/${admin.pseudo}/settings`" class="w-full">
-            <UiButton class="w-full justify-center">
-              Paramètres du profil
+        <div class="w-full space-y-3 border-t pt-4 text-sm opacity-80">
+          <div class="flex justify-between">
+            <span class="font-medium">Email:</span>
+            <span>{{ me.email }}</span>
+          </div>
+          <div v-if="me.poste" class="flex justify-between">
+            <span class="font-medium">Poste:</span>
+            <span>{{ me.poste }}</span>
+          </div>
+        </div>
+        <div class="flex w-full flex-col gap-3 pt-4">
+          <NuxtLink :to="`/${me.pseudo}/settings`" class="w-full">
+            <UiButton variant="outline" class="w-full justify-center">
+              Modifier le profil
             </UiButton>
           </NuxtLink>
-          <NuxtLink
-            to="/"
-            class="text-center text-xs text-gray-400 hover:underline"
+          <UiButton
+            @click="logout"
+            variant="destructive"
+            class="w-full justify-center border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
           >
-            Retour à l'accueil
-          </NuxtLink>
+            Se déconnecter
+          </UiButton>
         </div>
       </div>
     </div>
-    <div v-else class="flex flex-col items-center gap-2">
-      <UiParagraph class="animate-pulse text-gray-400"
-        >Chargement du profil...</UiParagraph
-      >
+    <div v-else class="flex flex-col items-center gap-4">
+      <div
+        class="border-primary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent"
+      ></div>
+      <p class="animate-pulse opacity-70">Synchronisation de votre profil...</p>
     </div>
   </div>
 </template>
