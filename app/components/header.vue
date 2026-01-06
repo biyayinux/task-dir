@@ -1,24 +1,24 @@
 <script setup>
-const colorMode = useColorMode()
+import { storeToRefs } from 'pinia'
 
-const toggleDark = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-}
+const meStore = useMeStore()
+
+// On déstructure avec storeToRefs pour garantir la réactivité
+const { me } = storeToRefs(meStore)
 </script>
 
 <template>
-  <header class="flex items-center justify-between p-4">
-    <div class="flex items-center gap-2">
-      <LucideClipboardCheck class="h-6 w-6" />
-      <h1 class="text-2xl">
-        <NuxtLink to="/">TaskDir</NuxtLink>
-      </h1>
+  <header class="flex items-center justify-between border-b bg-white p-4">
+    <NuxtLink to="/" class="text-xl font-bold">TaskDir</NuxtLink>
+    <div v-if="me" class="flex items-center gap-2">
+      <span class="text-sm font-medium">{{ me.pseudo }}</span>
+      <UiAvatar
+        :src="me.photo_profil || '/images/avatar.svg'"
+        class="h-8 w-8 rounded-full shadow-sm"
+      />
     </div>
-    <ClientOnly>
-      <button @click="toggleDark" type="button">
-        <LucideSun v-if="colorMode.value === 'dark'" class="h-6 w-6" />
-        <LucideMoon v-else class="h-6 w-6" />
-      </button>
-    </ClientOnly>
+    <NuxtLink v-else to="/login" class="text-sm text-gray-500 hover:underline">
+      Connexion
+    </NuxtLink>
   </header>
 </template>

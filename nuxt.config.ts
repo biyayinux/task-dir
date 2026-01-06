@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()]
   },
 
-  modules: ['nuxt-lucide-icons', '@nuxtjs/color-mode'],
+  modules: ['nuxt-lucide-icons', '@nuxtjs/color-mode', '@pinia/nuxt'],
   colorMode: {
     classSuffix: '',
     preference: 'system',
