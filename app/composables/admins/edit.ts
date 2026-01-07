@@ -1,6 +1,7 @@
 export const useEditAdmin = () => {
   const config = useRuntimeConfig()
-  const { me, fetchProfile, logout } = useMe()
+  const meStore = useMeStore() // On accède directement au store pour le modifier
+  const { me, logout } = useMe()
   const isLoading = ref(false)
 
   const updateProfile = async (formData: any) => {
@@ -8,17 +9,22 @@ export const useEditAdmin = () => {
     isLoading.value = true
 
     try {
-      const response = await $fetch(`${config.public.backendUrl}/admin/edit`, {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData
-      })
+      // Envoi des modifications au serveur
+      const response = await $fetch<any>(
+        `${config.public.backendUrl}/admin/edit`,
+        {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData
+        }
+      )
 
-      // Rafraîchir les données du store global après modification
-      await fetchProfile()
+      // Mise à jour manuelle du store sans recharger (Refresh)
+      const updatedAdmin = response.admin || response
+      meStore.setMe(updatedAdmin)
 
-      // Redirection vers le profil
-      await navigateTo(`/${me.value?.pseudo}`)
+      // Redirection vers le profil avec les nouvelles données déjà présentes
+      await navigateTo(`/${updatedAdmin.pseudo}`)
     } catch (error) {
       console.error('Erreur de mise à jour:', error)
     } finally {

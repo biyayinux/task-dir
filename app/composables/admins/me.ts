@@ -1,35 +1,37 @@
 import { storeToRefs } from 'pinia'
+import { useQuery } from '@tanstack/vue-query'
 
 export const useMe = () => {
   const meStore = useMeStore()
   const { me } = storeToRefs(meStore)
   const config = useRuntimeConfig()
 
-  // Récupération du profil admin
-  const fetchProfile = async (): Promise<void> => {
-    // Vérification côté client uniquement
-    if (import.meta.server) return
+  // Utilisation de TanStack Query pour gérer le cache
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['admin-me'],
+    queryFn: async () => {
+      const token = localStorage.getItem('auth_token')
+      if (!token) return null
 
-    const token = localStorage.getItem('auth_token')
-    if (!token) {
-      await navigateTo('/login')
-      return
-    }
-
-    try {
-      const data = await $fetch<any>(`${config.public.backendUrl}/admin/me`, {
+      return await $fetch<any>(`${config.public.backendUrl}/admin/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
+    },
+    // Ne s'exécute que côté client si un token existe
+    enabled: import.meta.client && !!localStorage.getItem('auth_token')
+  })
 
-      // Mise à jour globale du profil
-      meStore.setMe(data)
-    } catch (error) {
-      console.error('Erreur de session:', error)
-      await logout()
-    }
-  }
+  // On synchronise Pinia quand TanStack reçoit de nouvelles données
+  watch(
+    data,
+    (newData) => {
+      if (newData) {
+        meStore.setMe(newData)
+      }
+    },
+    { immediate: true }
+  )
 
-  // Suppression de la session
   const logout = async (): Promise<void> => {
     meStore.clearMe()
     if (import.meta.client) {
@@ -40,7 +42,8 @@ export const useMe = () => {
 
   return {
     me,
-    fetchProfile,
+    isLoading,
+    fetchProfile: refetch, // Refetch permet de forcer la mise à jour si besoin
     logout
   }
 }
