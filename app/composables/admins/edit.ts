@@ -1,7 +1,7 @@
 export const useEditAdmin = () => {
   const config = useRuntimeConfig()
-  const meStore = useMeStore() // On accède directement au store pour le modifier
-  const { me, logout } = useMe()
+  const meStore = useMeAdminStore() // On accède directement au store pour le modifier
+  const { me, logout } = useMeAdmin()
   const isLoading = ref(false)
 
   const updateProfile = async (formData: any) => {
@@ -21,7 +21,7 @@ export const useEditAdmin = () => {
 
       // Mise à jour manuelle du store sans recharger (Refresh)
       const updatedAdmin = response.admin || response
-      meStore.setMe(updatedAdmin)
+      meStore.setMeAdmin(updatedAdmin)
 
       // Redirection vers le profil avec les nouvelles données déjà présentes
       await navigateTo(`/${updatedAdmin.pseudo}`)

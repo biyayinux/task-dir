@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   // Configuration des auto-imports pour scanner les sous-dossiers
   imports: {
-    dirs: ['composables/**']
+    dirs: ['composables/**', 'stores/**']
   },
 
   runtimeConfig: {

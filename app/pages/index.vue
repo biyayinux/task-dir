@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { fetchProfile } = useMe()
+const { fetchProfile } = useMeAdmin()
 
 // Récupération des données au montage du composant
 onMounted(() => {

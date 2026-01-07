@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { Home, User, Sun, Moon, ClipboardCheck, Menu, X } from 'lucide-vue-next'
 
-const meStore = useMeStore()
+const meStore = useMeAdminStore()
 const { me } = storeToRefs(meStore)
 
 // État pour le menu mobile

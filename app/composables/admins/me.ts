@@ -1,8 +1,8 @@
 import { storeToRefs } from 'pinia'
 import { useQuery } from '@tanstack/vue-query'
 
-export const useMe = () => {
-  const meStore = useMeStore()
+export const useMeAdmin = () => {
+  const meStore = useMeAdminStore()
   const { me } = storeToRefs(meStore)
   const config = useRuntimeConfig()
 
@@ -26,14 +26,14 @@ export const useMe = () => {
     data,
     (newData) => {
       if (newData) {
-        meStore.setMe(newData)
+        meStore.setMeAdmin(newData)
       }
     },
     { immediate: true }
   )
 
   const logout = async (): Promise<void> => {
-    meStore.clearMe()
+    meStore.clearMeAdmin()
     if (import.meta.client) {
       localStorage.removeItem('auth_token')
     }

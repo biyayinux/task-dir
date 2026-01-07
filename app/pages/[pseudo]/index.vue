@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Utilisation du composable pour récupérer l'admin connecté
-const { me, fetchProfile } = useMe()
+const { me, fetchProfile } = useMeAdmin()
 
 onMounted(() => {
   fetchProfile()
