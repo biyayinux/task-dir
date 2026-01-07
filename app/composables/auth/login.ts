@@ -22,7 +22,7 @@ export const useAuthLogin = () => {
     const existingToken = localStorage.getItem('auth_token')
     if (existingToken) {
       try {
-        const res = await fetch(`${config.public.backendUrl}/admin/me`, {
+        const res = await fetch(`${config.public.backendUrl}/api/admin/me`, {
           headers: { Authorization: `Bearer ${existingToken}` }
         })
         if (res.ok) return navigateTo('/')

@@ -11,7 +11,7 @@ export const useEditAdmin = () => {
     try {
       // Envoi des modifications au serveur
       const response = await $fetch<any>(
-        `${config.public.backendUrl}/admin/edit`,
+        `${config.public.backendUrl}/api/admin/edit`,
         {
           method: 'PUT',
           headers: { Authorization: `Bearer ${token}` },

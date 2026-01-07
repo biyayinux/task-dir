@@ -13,7 +13,7 @@ export const useMe = () => {
       const token = localStorage.getItem('auth_token')
       if (!token) return null
 
-      return await $fetch<any>(`${config.public.backendUrl}/admin/me`, {
+      return await $fetch<any>(`${config.public.backendUrl}/api/admin/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
     },
