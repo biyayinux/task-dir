@@ -6,24 +6,24 @@ export const useMeAdmin = () => {
   const { me } = storeToRefs(meStore)
   const config = useRuntimeConfig()
 
-  // Gestion du cache et de la requête avec TanStack Query
+  // Configuration de TanStack Query
   const { data, isLoading, refetch, error } = useQuery({
     queryKey: ['me_admin'],
     queryFn: async () => {
       const token = localStorage.getItem('auth_token')
-      if (!token) return null
+      if (!token) throw new Error('No token')
 
       return await $fetch<any>(`${config.public.backendUrl}/api/admin/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
     },
-    // Activer uniquement côté client avec un token présent
-    enabled: import.meta.client && !!localStorage.getItem('auth_token'),
-    // Pas de tentative supplémentaire en cas d'échec (401/403)
-    retry: false
+
+    // Désactivation du retry pour les erreurs 401 et 403
+    retry: false,
+    enabled: import.meta.client && !!localStorage.getItem('auth_token')
   })
 
-  // Synchroniser les données reçues avec le store Pinia
+  // Synchronisation des données avec le store Pinia
   watch(
     data,
     (newData) => {
@@ -32,18 +32,20 @@ export const useMeAdmin = () => {
     { immediate: true }
   )
 
-  // Rediriger vers login si le token est expiré ou invalide
+  // Gestion des erreurs d’authentification (token expiré)
   watch(error, async (newError: any) => {
     if (newError?.status === 401 || newError?.status === 403) {
       await logout()
     }
   })
 
-  // Nettoyage complet de la session
-  const logout = async (): Promise<void> => {
+  // Fonction de déconnexion de l’administrateur
+  const logout = async () => {
     meStore.clearMeAdmin()
-    if (import.meta.client) localStorage.removeItem('auth_token')
-    await navigateTo('/login')
+    if (import.meta.client) {
+      localStorage.removeItem('auth_token')
+    }
+    return navigateTo('/login')
   }
 
   return {
