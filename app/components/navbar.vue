@@ -83,6 +83,14 @@ const toggleDark = () => {
         <span>Accueil</span>
       </NuxtLink>
       <NuxtLink
+        to="/admins"
+        @click="isMenuOpen = false"
+        class="flex items-center gap-2"
+      >
+        <Users :size="20" />
+        <span>Administrateurs</span>
+      </NuxtLink>
+      <NuxtLink
         v-if="me"
         :to="`/${me.pseudo}`"
         @click="isMenuOpen = false"
