@@ -49,7 +49,7 @@ watch(
         </div>
       </div>
       <div class="space-y-4 pt-4 text-center">
-        <UiButton @click="updateProfile(form)" :disabled="isLoading">
+        <UiButton :disabled="isLoading" @click="updateProfile(form)">
           {{ isLoading ? 'En cours...' : 'Enregistrer' }}
         </UiButton>
         <button @click="logout">Se déconnecter</button>

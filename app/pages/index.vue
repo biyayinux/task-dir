@@ -33,7 +33,7 @@ onMounted(() => {
                 v-for="i in 3"
                 :key="i"
                 class="h-10 w-10 animate-pulse rounded-full bg-gray-100 ring-2 ring-white"
-              ></div>
+              />
             </div>
           </template>
         </ClientOnly>

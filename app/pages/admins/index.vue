@@ -12,8 +12,8 @@ onMounted(() => {
     <ClientOnly>
       <div v-if="isLoading" class="space-y-4">
         <div v-for="i in 3" :key="i" class="flex items-center gap-4 opacity-20">
-          <div class="h-12 w-12 rounded-full bg-gray-400"></div>
-          <div class="h-4 w-24 bg-gray-400"></div>
+          <div class="h-12 w-12 rounded-full bg-gray-400" />
+          <div class="h-4 w-24 bg-gray-400" />
         </div>
       </div>
       <div v-else-if="others && others.length > 0" class="space-y-4">

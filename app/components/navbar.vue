@@ -59,12 +59,12 @@ const toggleDark = () => {
           Connexion...
         </NuxtLink>
         <ClientOnly>
-          <button @click="toggleDark" type="button">
+          <button type="button" @click="toggleDark">
             <Sun v-if="colorMode.value === 'dark'" class="h-6 w-6" />
             <Moon v-else class="h-6 w-6" />
           </button>
         </ClientOnly>
-        <button @click="isMenuOpen = !isMenuOpen" class="md:hidden">
+        <button class="md:hidden" @click="isMenuOpen = !isMenuOpen">
           <Menu v-if="!isMenuOpen" class="h-7 w-7" />
           <X v-else class="h-7 w-7" />
         </button>
@@ -76,16 +76,16 @@ const toggleDark = () => {
     >
       <NuxtLink
         to="/"
-        @click="isMenuOpen = false"
         class="flex items-center gap-2"
+        @click="isMenuOpen = false"
       >
         <Home :size="20" />
         <span>Accueil</span>
       </NuxtLink>
       <NuxtLink
         to="/admins"
-        @click="isMenuOpen = false"
         class="flex items-center gap-2"
+        @click="isMenuOpen = false"
       >
         <Users :size="20" />
         <span>Administrateurs</span>
@@ -93,8 +93,8 @@ const toggleDark = () => {
       <NuxtLink
         v-if="me"
         :to="`/${me.pseudo}`"
-        @click="isMenuOpen = false"
         class="flex items-center gap-2"
+        @click="isMenuOpen = false"
       >
         <User :size="20" />
         <span>Profil</span>

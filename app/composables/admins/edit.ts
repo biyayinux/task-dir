@@ -1,18 +1,26 @@
+// Définition des champs modifiables du profil
+interface UpdateAdminPayload {
+  noms?: string
+  pseudo?: string
+  email?: string
+}
+
 export const useEditAdmin = () => {
   const config = useRuntimeConfig()
   const meStore = useMeAdminStore()
 
-  // Récupération de la session et des outils depuis useMeAdmin
+  // Récupération de la session existante
   const { me, logout, fetchProfile } = useMeAdmin()
   const isLoading = ref(false)
 
-  const updateProfile = async (formData: any) => {
+  // Mise à jour du profil avec des données typées
+  const updateProfile = async (formData: UpdateAdminPayload) => {
     const token = localStorage.getItem('auth_token')
     isLoading.value = true
 
     try {
-      // Envoi des modifications au serveur
-      const response = await $fetch<any>(
+      // Envoi des modifications (On attend un objet de type Me en retour)
+      const response = await $fetch<{ admin: Me } | Me>(
         `${config.public.backendUrl}/api/admin/edit`,
         {
           method: 'PUT',
@@ -21,11 +29,11 @@ export const useEditAdmin = () => {
         }
       )
 
-      // Mise à jour immédiate du store Pinia
-      const updatedMeAdmin = response.admin || response
-      meStore.setMeAdmin(updatedMeAdmin)
+      // Extraction des données mises à jour
+      const updatedMeAdmin = 'admin' in response ? response.admin : response
 
-      // Redirection vers le nouveau pseudo
+      // Mise à jour du store et redirection
+      meStore.setMeAdmin(updatedMeAdmin)
       await navigateTo(`/${updatedMeAdmin.pseudo}`)
     } catch (error) {
       console.error('Erreur de mise à jour:', error)
@@ -39,6 +47,6 @@ export const useEditAdmin = () => {
     isLoading,
     updateProfile,
     logout,
-    fetchProfile // Permet de rafraîchir manuellement
+    fetchProfile
   }
 }
