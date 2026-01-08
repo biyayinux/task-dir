@@ -1,7 +1,9 @@
 export const useEditAdmin = () => {
   const config = useRuntimeConfig()
-  const meStore = useMeAdminStore() // On accède directement au store pour le modifier
-  const { me, logout } = useMeAdmin()
+  const meStore = useMeAdminStore()
+
+  // Récupération de la session et des outils depuis useMeAdmin
+  const { me, logout, fetchProfile } = useMeAdmin()
   const isLoading = ref(false)
 
   const updateProfile = async (formData: any) => {
@@ -19,12 +21,12 @@ export const useEditAdmin = () => {
         }
       )
 
-      // Mise à jour manuelle du store sans recharger (Refresh)
-      const updatedAdmin = response.admin || response
-      meStore.setMeAdmin(updatedAdmin)
+      // Mise à jour immédiate du store Pinia
+      const updatedMeAdmin = response.admin || response
+      meStore.setMeAdmin(updatedMeAdmin)
 
-      // Redirection vers le profil avec les nouvelles données déjà présentes
-      await navigateTo(`/${updatedAdmin.pseudo}`)
+      // Redirection vers le nouveau pseudo
+      await navigateTo(`/${updatedMeAdmin.pseudo}`)
     } catch (error) {
       console.error('Erreur de mise à jour:', error)
     } finally {
@@ -36,6 +38,7 @@ export const useEditAdmin = () => {
     me,
     isLoading,
     updateProfile,
-    logout
+    logout,
+    fetchProfile // Permet de rafraîchir manuellement
   }
 }

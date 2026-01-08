@@ -1,16 +1,23 @@
 <script setup lang="ts">
-const { me, isLoading, updateProfile, logout } = useEditAdmin()
+const { me, isLoading, updateProfile, logout, fetchProfile } = useEditAdmin()
 
-// On crée une copie locale pour le formulaire pour éviter de modifier le store avant validation
+// Formulaire local
 const form = ref({ ...me.value })
 
-// On s'assure que le formulaire est rempli si les données arrivent après le montage
+// On force TanStack Query à vérifier s'il y a des changements sur le serveur
+onMounted(() => {
+  fetchProfile()
+})
+
+// Ce watch mettra à jour le formulaire si TanStack Query
 watch(
   me,
   (newVal) => {
-    if (newVal) form.value = { ...newVal }
+    if (newVal) {
+      form.value = { ...newVal }
+    }
   },
-  { immediate: true }
+  { deep: true }
 )
 </script>
 
@@ -38,21 +45,15 @@ watch(
             v-model="(form as any)[field]"
             type="text"
             class="w-full border-b bg-transparent py-1 outline-none"
-            :placeholder="field"
           />
         </div>
       </div>
       <div class="space-y-4 pt-4 text-center">
-        <UiButton
-          @click="updateProfile(form)"
-          :disabled="isLoading"
-          class="w-full border py-2 text-sm disabled:opacity-30"
-        >
+        <UiButton @click="updateProfile(form)" :disabled="isLoading">
           {{ isLoading ? 'En cours...' : 'Enregistrer' }}
         </UiButton>
         <button @click="logout">Se déconnecter</button>
       </div>
     </div>
-    <div v-else class="py-20 text-center text-sm opacity-30">Chargement...</div>
   </main>
 </template>
