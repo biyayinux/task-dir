@@ -1,6 +1,15 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { Home, User, Sun, Moon, ClipboardCheck, Menu, X } from 'lucide-vue-next'
+import {
+  Home,
+  Users,
+  User,
+  Sun,
+  Moon,
+  ClipboardCheck,
+  Menu,
+  X
+} from 'lucide-vue-next'
 
 const meStore = useMeAdminStore()
 const { me } = storeToRefs(meStore)
@@ -26,6 +35,10 @@ const toggleDark = () => {
           <NuxtLink to="/" class="flex items-center gap-2">
             <Home :size="20" />
             <span>Accueil</span>
+          </NuxtLink>
+          <NuxtLink to="/admins" class="flex items-center gap-2">
+            <Users :size="20" />
+            <span>Administrateurs</span>
           </NuxtLink>
           <NuxtLink
             v-if="me"

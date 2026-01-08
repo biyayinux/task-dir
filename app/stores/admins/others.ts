@@ -1,19 +1,26 @@
 import { defineStore } from 'pinia'
 
-// Structure d'un autre admin
 export interface OtherAdmin {
-  photo_profil: string
+  noms: string
+  pseudo: string
+  description?: string
+  github?: string
+  portefolio?: string
+  photo_profil?: string
+  poste?: string
+  inscrit_le: string
 }
 
 export const useOthersAdminStore = defineStore('others_admins', () => {
+  // Liste des autres administrateurs
   const others = ref<OtherAdmin[]>([])
 
-  // Met à jour la liste
+  // Met à jour la liste avec toutes les infos
   const setOthers = (data: OtherAdmin[]) => {
     others.value = data
   }
 
-  // Réinitialise la liste
+  // Nettoyage du store
   const clearOthers = () => {
     others.value = []
   }
