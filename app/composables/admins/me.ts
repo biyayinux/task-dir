@@ -2,7 +2,6 @@ import { storeToRefs } from 'pinia'
 import { useQuery } from '@tanstack/vue-query'
 import type { FetchError } from 'ofetch'
 
-// Structure des données de l'administrateur
 export interface Me {
   id: number
   noms: string
@@ -16,23 +15,25 @@ export const useMeAdmin = () => {
   const meStore = useMeAdminStore()
   const { me } = storeToRefs(meStore)
   const config = useRuntimeConfig()
+  const { logout, watchAuthError } = useAuthSession()
 
-  // Récupération des données via TanStack Query
-  const { data, isLoading, refetch, error } = useQuery<Me>({
+  // Récupère le profil admin connecté
+  const { data, isLoading, refetch, error } = useQuery<Me, FetchError>({
     queryKey: ['me_admin'],
     queryFn: async () => {
       const token = localStorage.getItem('auth_token')
-      if (!token) throw new Error('No token')
-
       return await $fetch<Me>(`${config.public.backendUrl}/api/admin/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
     },
     retry: false,
-    enabled: import.meta.client && !!localStorage.getItem('auth_token')
+    enabled: !!(import.meta.client && localStorage.getItem('auth_token'))
   })
 
-  // Synchronisation avec le store Pinia
+  // Vérifie si la session expire (401/403)
+  watchAuthError(error as Ref<FetchError | null>)
+
+  // Met à jour Pinia quand les données arrivent
   watch(
     data,
     (newData) => {
@@ -41,26 +42,5 @@ export const useMeAdmin = () => {
     { immediate: true }
   )
 
-  // Redirection si le token est invalide ou expiré
-  watch(error, async (newError: FetchError | null) => {
-    if (newError?.statusCode === 401 || newError?.statusCode === 403) {
-      await logout()
-    }
-  })
-
-  // Nettoyage de la session et redirection
-  const logout = async () => {
-    meStore.clearMeAdmin()
-    if (import.meta.client) {
-      localStorage.removeItem('auth_token')
-    }
-    return navigateTo('/login')
-  }
-
-  return {
-    me,
-    isLoading,
-    fetchProfile: refetch,
-    logout
-  }
+  return { me, isLoading, fetchProfile: refetch, logout }
 }

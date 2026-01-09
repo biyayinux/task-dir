@@ -1,28 +1,36 @@
 import { storeToRefs } from 'pinia'
 import { useQuery } from '@tanstack/vue-query'
+import type { FetchError } from 'ofetch'
 
 export const useOthersAdmins = () => {
   const othersStore = useOthersAdminStore()
   const { others } = storeToRefs(othersStore)
   const config = useRuntimeConfig()
+  const { logout, watchAuthError } = useAuthSession()
 
-  // Requête API avec cache (TanStack Query)
-  const { data, isLoading, refetch, error } = useQuery({
+  // Récupère la liste des autres administrateurs
+  const { data, isLoading, refetch, error } = useQuery<
+    OtherAdmin[],
+    FetchError
+  >({
     queryKey: ['others_admins'],
     queryFn: async () => {
       const token = localStorage.getItem('auth_token')
-      if (!token) throw new Error('No token found')
-
       return await $fetch<OtherAdmin[]>(
         `${config.public.backendUrl}/api/admin/others`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
       )
     },
     retry: false,
     enabled: !!(import.meta.client && localStorage.getItem('auth_token'))
   })
 
-  // TanStack vers Pinia
+  // Vérifie si la session expire (401/403)
+  watchAuthError(error as Ref<FetchError | null>)
+
+  // Met à jour Pinia quand les données arrivent
   watch(
     data,
     (newData) => {
@@ -31,10 +39,5 @@ export const useOthersAdmins = () => {
     { immediate: true }
   )
 
-  return {
-    others,
-    isLoading,
-    fetchOthers: refetch,
-    error
-  }
+  return { others, isLoading, fetchOthers: refetch, logout }
 }
