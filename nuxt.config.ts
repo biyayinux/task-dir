@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
   // Modules
-  modules: ['@nuxt/eslint'],
+  modules: ['@nuxt/eslint', '@nuxt/icon'],
 
   // Outils de développement
   devtools: { enabled: true },
@@ -25,12 +25,16 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
-
   // Configuration ESLint
   eslint: {
     checker: true, // Affiche les erreurs ESLint pendant le développement
     config: {
       stylistic: true, // Active les règles de style du code
     },
+  },
+  // Configuration de Nuxt Icon
+  icon: {
+    mode: 'css',
+    cssLayer: 'base',
   },
 })
