@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-white text-black text-center px-4">
-    <h1 class="text-4xl font-bold mb-4">
+  <div class="flex min-h-screen flex-col items-center justify-center bg-white px-4 text-center text-black">
+    <h1 class="mb-4 text-4xl font-bold">
       TaskDir
     </h1>
     <p class="max-w-xl text-base">
