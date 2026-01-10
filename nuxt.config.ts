@@ -1,41 +1,22 @@
-import tailwindcss from '@tailwindcss/vite'
-
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  // Modules
+  modules: ['@nuxt/eslint'],
+
+  // Outils de développement
   devtools: { enabled: true },
 
-  // Active les fonctionnalités et la structure de dossier Nuxt 4
+  // Compatibilité Nuxt 4
   future: {
-    compatibilityVersion: 4
+    compatibilityVersion: 4,
   },
-  // Configuration des auto-imports pour scanner les sous-dossiers
-  imports: {
-    dirs: ['composables/**', 'stores/**']
-  },
+  compatibilityDate: '2025-07-15',
 
-  runtimeConfig: {
-    public: {
-      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL
-    }
-  },
-
-  css: ['./assets/styles/default.css'],
-  vite: {
-    build: {
-      sourcemap: false // Désactive la génération des sourcemaps
+  // Configuration ESLint
+  eslint: {
+    checker: true, // Affiche les erreurs ESLint pendant le développement
+    config: {
+      stylistic: true, // Active les règles de style du code
     },
-    plugins: [tailwindcss()]
   },
-
-  modules: [
-    'nuxt-lucide-icons',
-    '@nuxtjs/color-mode',
-    '@pinia/nuxt',
-    '@nuxt/eslint'
-  ],
-  colorMode: {
-    classSuffix: '',
-    preference: 'system',
-    fallback: 'light'
-  }
 })

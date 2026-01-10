@@ -1,7 +1,16 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  // Utilise la configuration ESLint moderne (Flat Config)
+  "eslint.useFlatConfig": true,
+
+  // Corrige automatiquement les erreurs ESLint à l'enregistrement
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Langages vérifiés par ESLint
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ]
 }
