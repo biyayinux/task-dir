@@ -1,0 +1,13 @@
+# Ignorer les fichiers de documentation
+README.md
+
+# Ignorer les fichiers de configuration d'outils tiers
+.eslintcache
+eslint.config.mjs
+
+# Ignorer les configurations d'éditeur
+.vscode/
+
+# Ignorer les fichiers de tests dans /app
+**/*.spec.ts
+**/*.test.ts
