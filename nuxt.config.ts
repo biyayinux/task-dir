@@ -10,6 +10,12 @@ export default defineNuxtConfig({
   // Déclaration du fichier CSS global
   css: ['/assets/css/main.css'],
 
+  runtimeConfig: {
+    public: {
+      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL, // URL du backend exposée côté client
+    },
+  },
+
   // Compatibilité Nuxt 4
   future: {
     compatibilityVersion: 4,
