@@ -1,14 +1,14 @@
 <template>
-  <div>Finalisation de la session...</div>
+  <div>Finalisation...</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // Récupère le token depuis l'URL
 const route = useRoute()
-const { token } = useAuth()
+const { token } = useAuth() as { token: Ref<string | null> }
 
-onMounted(() => {
-  const urlToken = route.query.token
+onMounted((): void => {
+  const urlToken = route.query.token as string | undefined
 
   if (urlToken) {
     token.value = urlToken // Enregistre le token
@@ -19,7 +19,7 @@ onMounted(() => {
     }, 100)
   }
   else {
-    navigateTo('/login') // Si pas de token
+    navigateTo('/login') // Redirection si pas de token
   }
 })
 </script>
