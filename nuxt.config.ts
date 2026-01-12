@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   // Modules
   modules: ['@nuxt/eslint', '@nuxt/icon'],
 
+  // Configuration des auto-imports pour scanner les sous-dossiers
+  imports: {
+    dirs: ['composables/**'],
+  },
+
   // Outils de développement
   devtools: { enabled: true },
 

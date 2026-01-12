@@ -14,22 +14,26 @@
           <strong>Description :</strong> {{ admin.description }}
         </li>
         <li v-if="admin.github">
-          <strong>GitHub :</strong> <a
+          <strong>GitHub :</strong>
+          <a
             :href="admin.github"
             target="_blank"
+            rel="noopener"
           >Lien</a>
         </li>
         <li v-if="admin.portefolio">
-          <strong>Portfolio :</strong> <a
+          <strong>Portfolio :</strong>
+          <a
             :href="admin.portefolio"
             target="_blank"
+            rel="noopener"
           >Lien</a>
         </li>
         <li><strong>Inscrit le :</strong> {{ formatDate(admin.inscritLe) }}</li>
       </ul>
-      <button @click="logout">
-        Se déconnecter
-      </button>
+      <NuxtLink :to="`/${admin.pseudo}/settings`">
+        Paramètres du compte
+      </NuxtLink>
     </div>
     <div v-else>
       <p>Chargement...</p>
@@ -38,13 +42,13 @@
 </template>
 
 <script setup lang="ts">
-// Composable pour gérer le profil admin et la session
-const { admin, logout, fetchProfile } = useAdminProfile()
+// Composable pour gérer le profil admin
+const { admin, fetchProfile } = useAdminProfile()
 const route = useRoute()
 
 onMounted(async () => {
   if (!admin.value) {
-    await fetchProfile() // Charge le profil si nécessaire
+    await fetchProfile() // Charge les données si nécessaire
   }
 
   // Redirection si le pseudo dans l'URL ne correspond pas
