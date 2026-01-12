@@ -1,35 +1,46 @@
 <template>
-  <div>
+  <main>
     <h1>Tableau de bord</h1>
     <div v-if="admin">
-      <p>Bienvenue, <strong>{{ admin.pseudo }}</strong></p>
+      <ul>
+        <li><strong>Nom :</strong> {{ admin.noms }}</li>
+        <li><strong>Email :</strong> {{ admin.email }}</li>
+        <li><strong>Pseudo :</strong> {{ admin.pseudo }}</li>
+        <li v-if="admin.poste">
+          <strong>Poste :</strong> {{ admin.poste }}
+        </li>
+        <li v-if="admin.description">
+          <strong>Description :</strong> {{ admin.description }}
+        </li>
+        <li v-if="admin.github">
+          <strong>GitHub :</strong> <a
+            :href="admin.github"
+            target="_blank"
+          >Lien</a>
+        </li>
+        <li v-if="admin.portefolio">
+          <strong>Portfolio :</strong> <a
+            :href="admin.portefolio"
+            target="_blank"
+          >Lien</a>
+        </li>
+        <li><strong>Inscrit le :</strong> {{ formatDate(admin.inscritLe) }}</li>
+      </ul>
       <button @click="logout">
-        Se deconnecter
+        Se déconnecter
       </button>
     </div>
     <div v-else>
-      <p>Chargement du profil...</p>
+      <p>Chargement...</p>
     </div>
-  </div>
+  </main>
 </template>
 
-<script setup>
-const { token, admin, logout } = useAuth()
-const config = useRuntimeConfig()
+<script setup lang="ts">
+// Composable pour récupérer le profil admin et gérer la session
+const { admin, logout, fetchProfile } = useAdminProfile()
 
-onMounted(async () => {
-  if (!token.value) return // Stop si pas de token
-
-  try {
-    const data = await $fetch(`${config.public.backendUrl}/api/v1/admin/me`, {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-    })
-    admin.value = data // Met à jour l'admin
-  }
-  catch {
-    logout() // Supprime la session si erreur
-  }
+onMounted(() => {
+  fetchProfile() // Charge les données au montage
 })
 </script>
