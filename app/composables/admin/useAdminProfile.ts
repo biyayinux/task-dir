@@ -1,4 +1,6 @@
-// Interface pour les données de l'administrateur
+import type { FetchError } from 'ofetch'
+
+// Données du profil administrateur
 export interface AdminData {
   noms: string
   pseudo: string
@@ -11,7 +13,7 @@ export interface AdminData {
 }
 
 export const useAdminProfile = () => {
-  // Récupère le token, le profil et la fonction logout
+  // Token, profil et déconnexion
   const { token, admin, logout } = useAuth() as {
     token: Ref<string | null>
     admin: Ref<AdminData | null>
@@ -20,18 +22,26 @@ export const useAdminProfile = () => {
 
   const config = useRuntimeConfig()
 
+  // Récupère le profil depuis l’API
   const fetchProfile = async () => {
-    if (!token.value) return // Stop si pas de token
+    if (!token.value) return
 
     try {
-      // Récupère le profil admin depuis le backend
       const data = await $fetch<AdminData>(`${config.public.backendUrl}/api/v1/admin/me`, {
         headers: { Authorization: `Bearer ${token.value}` },
       })
-      admin.value = data // Met à jour l'état avec les données
+      admin.value = data
     }
-    catch {
-      logout() // Supprime la session si erreur
+    catch (err) {
+      const fetchError = err as FetchError<{ error: string }>
+
+      logout() // Invalide la session locale
+
+      throw showError({
+        statusCode: fetchError.statusCode,
+        statusMessage: fetchError.data?.error,
+        fatal: true,
+      })
     }
   }
 
